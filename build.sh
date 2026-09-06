@@ -42,7 +42,7 @@ cmake -S "$UPSTREAM_DIR" -B "$BUILD_TMP" \
     -DCRYPTO_BACKEND=OpenSSL \
     -DOPENSSL_ROOT_DIR="$ABS_OPENSSL_DIR" \
     -DOPENSSL_INCLUDE_DIR="$ABS_OPENSSL_DIR/include" \
-    -DCMAKE_C_FLAGS="-isystem $ABS_MUSL_DIR/include"
+    -DCMAKE_C_FLAGS="-static -nostdlib -mcmodel=large -fno-pic -mno-red-zone -fno-stack-protector -O2 -isystem $ABS_MUSL_DIR/include"
 
 cmake --build "$BUILD_TMP" -j"$(nproc)"
 cmake --install "$BUILD_TMP"

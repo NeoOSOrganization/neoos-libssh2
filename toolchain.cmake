@@ -9,7 +9,12 @@ set(CMAKE_SYSTEM_PROCESSOR x86_64)
 set(CMAKE_C_COMPILER x86_64-elf-gcc)
 set(CMAKE_AR x86_64-elf-ar)
 set(CMAKE_RANLIB x86_64-elf-ranlib)
-set(CMAKE_C_FLAGS_INIT "-static -nostdlib -mcmodel=large -fno-pic -mno-red-zone -fno-stack-protector -O2")
+# NOT set here as CMAKE_C_FLAGS_INIT: build.sh passes the full
+# freestanding flag set (these plus -isystem $MUSL_DIR/include, which
+# this static file cannot know the path to) via an explicit
+# -DCMAKE_C_FLAGS=..., which as a directly-set cache value always wins
+# over an _INIT seed anyway -- a second, different definition here
+# would just be silently-overridden dead code.
 
 # CMake cross-compiling: find_program searches the HOST (we want the
 # host's own cmake/make, not a target one -- there is no target one),

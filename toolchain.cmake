@@ -24,3 +24,20 @@ set(CMAKE_RANLIB x86_64-elf-ranlib)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+# Every CMake feature-detection macro (check_function_exists,
+# check_c_source_compiles, check_symbol_exists, ...) defaults to linking
+# a full EXECUTABLE for its probe. Our freestanding build flags
+# (-nostdlib etc, passed via CMAKE_C_FLAGS) have no crt1.o/-lc attached
+# to those probes, so every such check fails to *link* regardless of
+# whether the function it's testing actually exists in musl -- this is
+# what made libssh2's CheckNonblockingSocketSupport.cmake report
+# HAVE_POLL/HAVE_SELECT/HAVE_O_NONBLOCK/HAVE_FIONBIO/
+# HAVE_IOCTLSOCKET_CASE/HAVE_SO_NONBLOCK all undefined even though NeoOS
+# supports every one of them, silently turning session_nonblock() into
+# a no-op and leaving sockets permanently blocking underneath libssh2's
+# nonblocking-mode bookkeeping (root-caused via a channel_read() hang:
+# docs/superpowers/plans/2026-09-06-libssh2-port.md Task 3).
+# Building a STATIC_LIBRARY instead needs no entry point or libc, so the
+# probe tests only what it's meant to: does this header/symbol compile.
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)

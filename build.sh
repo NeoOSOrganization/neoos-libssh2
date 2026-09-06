@@ -59,7 +59,7 @@ cmake -S "$UPSTREAM_DIR" -B "$BUILD_TMP" \
     -DCRYPTO_BACKEND=OpenSSL \
     -DOPENSSL_ROOT_DIR="$ABS_OPENSSL_DIR" \
     -DOPENSSL_INCLUDE_DIR="$ABS_OPENSSL_DIR/include" \
-    -DCMAKE_C_FLAGS="-static -nostdlib -mcmodel=large -fno-pic -mno-red-zone -fno-stack-protector -O2 -isystem $ABS_MUSL_DIR/include" \
+    -DCMAKE_C_FLAGS="-static -nostdlib -mcmodel=large -fno-pic -mno-red-zone -fno-stack-protector -O2 -ffunction-sections -fdata-sections -isystem $ABS_MUSL_DIR/include" \
     -DCMAKE_REQUIRED_LIBRARIES="$ABS_MUSL_DIR/lib/crt1.o;$ABS_MUSL_DIR/lib/libc.a"
 
 cmake --build "$BUILD_TMP" -j"$(nproc)"
